@@ -3676,7 +3676,16 @@ const q=query();if(!q){msg.textContent='至少選擇一項 P 與 I 才能搜尋'
 if(b.id==='exercise-search-v62'){window.open('https://pubmed.ncbi.nlm.nih.gov/?term='+encodeURIComponent(q),'_blank','noopener,noreferrer');return}
 if(b.id==='exercise-copy-v62'){if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(q).then(()=>msg.textContent='已複製檢索式').catch(()=>msg.textContent='複製失敗，請手動選取')}else msg.textContent='請手動選取檢索式複製'}
 });
-rct.addEventListener('change',query);free.addEventListener('change',query);query();
+// Keep checkbox interaction inside slide 4 instead of triggering deck navigation.
+const checkboxArea=[rct.closest('label'),free.closest('label')];
+['pointerdown','mousedown','mouseup','click','dblclick','touchstart','touchend'].forEach(type=>{
+ checkboxArea.forEach(label=>label.addEventListener(type,function(event){event.stopPropagation()},false));
+});
+[rct,free].forEach(input=>{
+ ['click','pointerdown','mousedown','mouseup','touchstart','touchend'].forEach(type=>input.addEventListener(type,function(event){event.stopPropagation()},false));
+ input.addEventListener('change',function(event){event.stopPropagation();query()});
+});
+query();
 })();
 </script>
 </body>
